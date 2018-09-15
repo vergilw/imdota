@@ -1,6 +1,7 @@
 from django.db import models
 
 # Create your models here.
+from django.contrib.auth.models import AbstractUser
 
 
 class Studio(models.Model):
@@ -12,6 +13,14 @@ class Author(models.Model):
     studio = models.ForeignKey('Studio', on_delete=models.SET_NULL, null=True, related_name='authors')
     name = models.CharField(max_length=30)
     grade = models.FloatField(default=0)
+    gender = models.CharField(
+        max_length=2,
+        choices=(
+            ('f', 'female'),
+            ('m', 'male'),
+        ),
+        null=True
+    )
 
     # ROLE_CHOICES = (
     #     (FRESHMAN, 'Writer'),
@@ -32,30 +41,25 @@ class Play(models.Model):
                                null=True,
                                related_name='Plays')
 
-    studioRepresentative = models.ForeignKey('Author',
-                                             on_delete=models.SET_NULL,
-                                             null=True,
-                                             related_name='representativePlays')
-
     author = models.ForeignKey('Author',
                                on_delete=models.SET_NULL,
                                null=True,
                                related_name='Plays')
 
-    authorRepresentative = models.ForeignKey('Studio',
-                                             on_delete=models.SET_NULL,
-                                             null=True,
-                                             related_name='representativePlays')
+    publisher = models.ForeignKey('Studio', on_delete=models.SET_NULL, null=True, related_name='publishedPlays')
 
     name = models.CharField(max_length=50)
     brief = models.CharField(max_length=2000, null=True)
-    duration = models.DurationField(null=True)
+    durationMinutes = models.SmallIntegerField(default=0)
     publishedDate = models.DateTimeField(null=True)
     roleCount = models.SmallIntegerField(default=0)
     isDetective = models.BooleanField(default=False)
+    isRepresentative = models.BooleanField(default=False)
     reasoningGrade = models.FloatField(default=0)
     storyGrade = models.FloatField(default=0)
     platforms = models.ManyToManyField('Platform', related_name='Plays')
+
+    # contributor
 
 
 class Platform(models.Model):
@@ -74,3 +78,29 @@ class Role(models.Model):
         ),
         null=True
     )
+
+
+class Tag(models.Model):
+    name = models.CharField(max_length=10)
+    play = models.ManyToManyField('Play')
+
+
+class User(AbstractUser):
+    gender = models.CharField(
+        max_length=2,
+        choices=(
+            ('f', 'female'),
+            ('m', 'male'),
+        ),
+        null=True
+    )
+
+
+class PlayComment(models.Model):
+    play = models.ForeignKey('Play', on_delete=models.CASCADE, null=True)
+
+    user = models.ForeignKey('User', on_delete=models.CASCADE)
+
+    reasoningGrade = models.FloatField(default=0)
+    storyGrade = models.FloatField(default=0)
+    desc = models.TextField(null=True)

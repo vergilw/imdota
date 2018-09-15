@@ -25,12 +25,13 @@ SECRET_KEY = 'gqy)!u7wy#c$#vbp-cjt7y5!#a3!*ns3l+%y7#&do7b2w2mc2s'
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = ['192.168.5.37', 'localhost', '127.0.0.1']
 
 
 # Application definition
 
 INSTALLED_APPS = [
+    'reasoning.apps.ReasoningConfig',
     'milestone.apps.MilestoneConfig',
     'django.contrib.admin',
     'django.contrib.auth',
@@ -76,8 +77,12 @@ WSGI_APPLICATION = 'imdota_django.wsgi.application'
 
 DATABASES = {
     'default': {
-        'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': os.path.join(BASE_DIR, 'db.sqlite3'),
+        'ENGINE': 'django.db.backends.mysql',
+        'NAME': 'reasoning',
+        'USER': 'root',
+        'PASSWORD': '20160326',
+        'HOST': '127.0.0.1',
+        'PORT': '3306',
     }
 }
 

@@ -75,13 +75,23 @@ WSGI_APPLICATION = 'imdota_django.wsgi.application'
 # Database
 # https://docs.djangoproject.com/en/2.1/ref/settings/#databases
 
+# DATABASES = {
+#     'default': {
+#         'ENGINE': 'django.db.backends.mysql',
+#         'NAME': 'reasoning',
+#         'USER': 'root',
+#         'PASSWORD': '20160326',
+#         'HOST': '127.0.0.1',
+#         'PORT': '3306',
+#     }
+# }
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.mysql',
         'NAME': 'reasoning',
-        'USER': 'root',
-        'PASSWORD': '20160326',
-        'HOST': '127.0.0.1',
+        'USER': 'fiber',
+        'PASSWORD': os.getenv("MYSQL_PASSWORD"),
+        'HOST': 'localhost',
         'PORT': '3306',
     }
 }

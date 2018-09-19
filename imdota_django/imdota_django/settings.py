@@ -94,7 +94,7 @@ DATABASES = {
         'NAME': 'reasoning',
         'USER': 'fiber',
         'PASSWORD': os.getenv("MYSQL_PASSWORD"),
-        'HOST': 'localhost',
+        'HOST': 'www.imdota.com',
         'PORT': '3306',
     }
 }

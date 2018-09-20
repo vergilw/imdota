@@ -7,7 +7,7 @@ from . import models
 
 
 def index(request):
-    return HttpResponse("Hello, world. You're at the polls index. hook")
+    return HttpResponse("Hello, world. You're at the polls index. webhooks")
 
 
 def signin(request):

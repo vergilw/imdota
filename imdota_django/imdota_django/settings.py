@@ -25,7 +25,7 @@ SECRET_KEY = 'gqy)!u7wy#c$#vbp-cjt7y5!#a3!*ns3l+%y7#&do7b2w2mc2s'
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = ['47.99.141.226', '*.imdota.com', 'imdota.com', '192.168.5.37', 'localhost', '127.0.0.1']
+ALLOWED_HOSTS = ['*']
 
 
 # Application definition

@@ -92,7 +92,11 @@ def bbsspider(request):
     if request.method == "GET":
         if request.user.is_superuser:
 
-            r = requests.get('https://www.murdermysterypa.com/plugin.php?id=mini_sjdp:index&page=1')
+            pageNumber = request.GET.get("index", None)
+            if not pageNumber:
+                return JsonResponse({"errorCode": "missingParameters"}, status=422)
+
+            r = requests.get('https://www.murdermysterypa.com/plugin.php?id=mini_sjdp:index&page=' + pageNumber)
             soup = BeautifulSoup(r.text, features="html.parser")
             details = soup.find_all('h3', class_="name")
 

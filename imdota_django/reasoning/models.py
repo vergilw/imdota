@@ -9,6 +9,13 @@ class Studio(models.Model):
     grade = models.FloatField(default=0)
     brief = models.TextField(null=True)
 
+    def __str__(self):
+        return self.name
+
+    class Meta:
+        verbose_name = "工作室"
+        verbose_name_plural = "工作室"
+
 
 class Author(models.Model):
     studio = models.ForeignKey('Studio', on_delete=models.SET_NULL, null=True, related_name='authors')
@@ -36,6 +43,13 @@ class Author(models.Model):
     #     default=FRESHMAN,
     # )
 
+    def __str__(self):
+        return self.name
+
+    class Meta:
+        verbose_name = "作者"
+        verbose_name_plural = "作者"
+
 
 class Play(models.Model):
     studio = models.ForeignKey('Studio',
@@ -62,10 +76,23 @@ class Play(models.Model):
     platforms = models.ManyToManyField('Platform', related_name='Plays')
 
     # contributors = models.ManyToManyField('User')
+    def __str__(self):
+        return self.name
+
+    class Meta:
+        verbose_name = "剧本"
+        verbose_name_plural = "剧本"
 
 
 class Platform(models.Model):
     name = models.CharField(max_length=30)
+
+    def __str__(self):
+        return self.name
+
+    class Meta:
+        verbose_name = "游戏平台"
+        verbose_name_plural = "游戏平台"
 
 
 class Role(models.Model):
@@ -81,10 +108,24 @@ class Role(models.Model):
         null=True
     )
 
+    def __str__(self):
+        return "剧本: " + self.play.name + ", 角色: " + self.name
+
+    class Meta:
+        verbose_name = "角色"
+        verbose_name_plural = "角色"
+
 
 class Tag(models.Model):
     name = models.CharField(max_length=10)
     play = models.ManyToManyField('Play')
+
+    def __str__(self):
+        return self.name
+
+    class Meta:
+        verbose_name = "标签"
+        verbose_name_plural = "标签"
 
 
 class User(AbstractUser):
@@ -97,6 +138,13 @@ class User(AbstractUser):
         null=True
     )
 
+    def __str__(self):
+        return "用户 " + self.username
+
+    class Meta:
+        verbose_name = "用户"
+        verbose_name_plural = "用户"
+
 
 class PlayComment(models.Model):
     play = models.ForeignKey('Play', on_delete=models.CASCADE, null=True)
@@ -106,3 +154,10 @@ class PlayComment(models.Model):
     reasoningGrade = models.FloatField(default=0)
     storyGrade = models.FloatField(default=0)
     desc = models.TextField(null=True)
+
+    def __str__(self):
+        return "用户 " + self.name + " 剧本 " + self.play.name + " 评论"
+
+    class Meta:
+        verbose_name = "剧本评论"
+        verbose_name_plural = "剧本评论"

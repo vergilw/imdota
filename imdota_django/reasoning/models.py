@@ -7,11 +7,13 @@ from django.contrib.auth.models import AbstractUser
 class Studio(models.Model):
     name = models.CharField(max_length=30)
     grade = models.FloatField(default=0)
+    brief = models.TextField(null=True)
 
 
 class Author(models.Model):
     studio = models.ForeignKey('Studio', on_delete=models.SET_NULL, null=True, related_name='authors')
     name = models.CharField(max_length=30)
+    brief = models.TextField(null=True)
     grade = models.FloatField(default=0)
     gender = models.CharField(
         max_length=2,
@@ -49,7 +51,7 @@ class Play(models.Model):
     publisher = models.ForeignKey('Studio', on_delete=models.SET_NULL, null=True, related_name='publishedPlays')
 
     name = models.CharField(max_length=50)
-    brief = models.CharField(max_length=2000, null=True)
+    brief = models.TextField(null=True)
     durationMinutes = models.SmallIntegerField(default=0)
     publishedDate = models.DateTimeField(null=True)
     roleCount = models.SmallIntegerField(default=0)
@@ -59,7 +61,7 @@ class Play(models.Model):
     storyGrade = models.FloatField(default=0)
     platforms = models.ManyToManyField('Platform', related_name='Plays')
 
-    # contributor
+    # contributors = models.ManyToManyField('User')
 
 
 class Platform(models.Model):
@@ -69,7 +71,7 @@ class Platform(models.Model):
 class Role(models.Model):
     play = models.ForeignKey('Play', on_delete=models.CASCADE, related_name='roles', null=True)
     name = models.CharField(max_length=30)
-    brief = models.CharField(max_length=100, null=True)
+    brief = models.TextField(null=True)
     gender = models.CharField(
         max_length=2,
         choices=(

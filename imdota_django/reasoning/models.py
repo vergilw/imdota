@@ -156,7 +156,7 @@ class PlayComment(models.Model):
     desc = models.TextField(null=True)
 
     def __str__(self):
-        return "用户 " + self.name + " 剧本 " + self.play.name + " 评论"
+        return "用户 " + self.user.username + " 剧本 " + self.play.name + " 评论"
 
     class Meta:
         verbose_name = "剧本评论"

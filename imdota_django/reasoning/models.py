@@ -7,7 +7,7 @@ from django.contrib.auth.models import AbstractUser
 class Studio(models.Model):
     name = models.CharField(max_length=30)
     grade = models.FloatField(default=0)
-    brief = models.TextField(null=True)
+    brief = models.TextField(blank=True, null=True)
 
     def __str__(self):
         return self.name
@@ -18,9 +18,9 @@ class Studio(models.Model):
 
 
 class Author(models.Model):
-    studio = models.ForeignKey('Studio', on_delete=models.SET_NULL, null=True, related_name='authors')
+    studio = models.ForeignKey('Studio', on_delete=models.SET_NULL, null=True, blank=True, related_name='authors')
     name = models.CharField(max_length=30)
-    brief = models.TextField(null=True)
+    brief = models.TextField(null=True, blank=True)
     grade = models.FloatField(default=0)
     gender = models.CharField(
         max_length=2,
@@ -28,7 +28,8 @@ class Author(models.Model):
             ('f', 'female'),
             ('m', 'male'),
         ),
-        null=True
+        null=True,
+        blank=True
     )
 
     # ROLE_CHOICES = (
@@ -54,28 +55,31 @@ class Author(models.Model):
 class Play(models.Model):
     studio = models.ForeignKey('Studio',
                                on_delete=models.SET_NULL,
+                               blank=True,
                                null=True,
                                related_name='Plays')
 
     author = models.ForeignKey('Author',
                                on_delete=models.SET_NULL,
+                               blank=True,
                                null=True,
                                related_name='Plays')
 
-    publisher = models.ForeignKey('Studio', on_delete=models.SET_NULL, null=True, related_name='publishedPlays')
+    publisher = models.ForeignKey('Studio', on_delete=models.SET_NULL, blank=True, null=True, related_name='publishedPlays')
 
     name = models.CharField(max_length=50)
-    brief = models.TextField(null=True)
+    brief = models.TextField(blank=True, null=True)
     durationMinutes = models.SmallIntegerField(default=0)
-    publishedDate = models.DateTimeField(null=True)
+    publishedDate = models.DateTimeField(blank=True, null=True)
     roleCount = models.SmallIntegerField(default=0)
     isDetective = models.BooleanField(default=False)
     isRepresentative = models.BooleanField(default=False)
     reasoningGrade = models.FloatField(default=0)
     storyGrade = models.FloatField(default=0)
-    platforms = models.ManyToManyField('Platform', related_name='Plays')
+    platforms = models.ManyToManyField('Platform', blank=True, related_name='plays')
 
     # contributors = models.ManyToManyField('User')
+
     def __str__(self):
         return self.name
 
@@ -96,16 +100,17 @@ class Platform(models.Model):
 
 
 class Role(models.Model):
-    play = models.ForeignKey('Play', on_delete=models.CASCADE, related_name='roles', null=True)
+    play = models.ForeignKey('Play', on_delete=models.CASCADE, related_name='roles', blank=True, null=True)
     name = models.CharField(max_length=30)
-    brief = models.TextField(null=True)
+    brief = models.TextField(blank=True, null=True)
     gender = models.CharField(
         max_length=2,
         choices=(
             ('f', 'female'),
             ('m', 'male'),
         ),
-        null=True
+        null=True,
+        blank=True,
     )
 
     def __str__(self):
@@ -118,7 +123,7 @@ class Role(models.Model):
 
 class Tag(models.Model):
     name = models.CharField(max_length=10)
-    play = models.ManyToManyField('Play')
+    play = models.ManyToManyField('Play', blank=True)
 
     def __str__(self):
         return self.name
@@ -135,7 +140,8 @@ class User(AbstractUser):
             ('f', 'female'),
             ('m', 'male'),
         ),
-        null=True
+        null=True,
+        blank=True,
     )
 
     def __str__(self):
@@ -147,13 +153,13 @@ class User(AbstractUser):
 
 
 class PlayComment(models.Model):
-    play = models.ForeignKey('Play', on_delete=models.CASCADE, null=True)
+    play = models.ForeignKey('Play', on_delete=models.CASCADE, blank=True, null=True)
 
     user = models.ForeignKey('User', on_delete=models.CASCADE)
 
     reasoningGrade = models.FloatField(default=0)
     storyGrade = models.FloatField(default=0)
-    desc = models.TextField(null=True)
+    desc = models.TextField(blank=True, null=True)
 
     def __str__(self):
         return "用户 " + self.user.username + " 剧本 " + self.play.name + " 评论"

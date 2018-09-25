@@ -6,10 +6,18 @@ from . import models
 import requests
 from bs4 import BeautifulSoup
 from urllib.parse import urljoin
+from django.core.paginator import Paginator
+import json
+from django.forms.models import model_to_dict
+
+from reasoning.models import User, Play, Platform
+from django.contrib.auth.models import Group
+from rest_framework import viewsets
+from reasoning.serializers import UserSerializer, PlaySerializer, PlatformSerializer
 
 # Create your views here.
 
-
+"""
 def index(request):
     return HttpResponse("Hello, world. You're at the polls index. web hooks ")
 
@@ -142,3 +150,47 @@ def bbsspider(request):
 
     else:
         return JsonResponse({"errorCode": "incorrectRequestMethod"}, status=400)
+
+
+def playlist(request):
+    if request.method != "GET":
+        return JsonResponse({"errorCode": "incorrectRequestMethod"}, status=400)
+
+    pageNumber = request.GET.get("page", None)
+    if not pageNumber:
+        return JsonResponse({"errorCode": "missingParameters"}, status=422)
+
+    queryset = models.Play.objects.all()
+    paginator = Paginator(queryset, 10)
+    plays = paginator.page(pageNumber).object_list
+
+    responseDict = {"data": []}
+    for play in plays:
+        responseDict["data"].append(model_to_dict(play))
+
+    return JsonResponse(responseDict, status=200)
+"""
+
+
+class UserViewSet(viewsets.ModelViewSet):
+    """
+    API endpoint that allows users to be viewed or edited.
+    """
+    queryset = User.objects.all().order_by('-date_joined')
+    serializer_class = UserSerializer
+
+
+class PlayViewSet(viewsets.ModelViewSet):
+    """
+    API endpoint that allows groups to be viewed or edited.
+    """
+    queryset = Play.objects.all()
+    serializer_class = PlaySerializer
+
+
+class PlatformViewSet(viewsets.ModelViewSet):
+    """
+    API endpoint that allows groups to be viewed or edited.
+    """
+    queryset = Platform.objects.all()
+    serializer_class = PlatformSerializer

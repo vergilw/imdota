@@ -6,18 +6,14 @@ from . import models
 import requests
 from bs4 import BeautifulSoup
 from urllib.parse import urljoin
-from django.core.paginator import Paginator
-import json
-from django.forms.models import model_to_dict
 
-from reasoning.models import User, Play, Platform
-from django.contrib.auth.models import Group
+from reasoning.models import User, Play, Platform, Studio, Author, Role, Tag
 from rest_framework import viewsets
-from reasoning.serializers import UserSerializer, PlaySerializer, PlatformSerializer
+from reasoning.serializers import UserSerializer, PlaySerializer, PlatformSerializer, StudioSerializer, AuthorSerializer, RoleSerializer, TagSerializer
 
 # Create your views here.
 
-"""
+
 def index(request):
     return HttpResponse("Hello, world. You're at the polls index. web hooks ")
 
@@ -130,11 +126,11 @@ def bbsspider(request):
                 durationTime = litag[3].text.split("：")[1]
                 durationTime = int("".join(filter(str.isdigit, durationTime))) * 60
 
-                gradeList = subsoup.find_all(class_="pingjialist")
-                reasoningGrade = gradeList[1].find("font").text
-                storyGrade = gradeList[2].find("font").text
+                scoreList = subsoup.find_all(class_="pingjialist")
+                logicScore = scoreList[1].find("font").text
+                storyScore = scoreList[2].find("font").text
 
-                play = models.Play(name=title, roleCount=memberCount, durationMinutes=durationTime, reasoningGrade=reasoningGrade, storyGrade=storyGrade)
+                play = models.Play(name=title, roleCount=memberCount, durationMinutes=durationTime, logicScore=logicScore, storyScore=storyScore)
                 play.save()
 
                 # platform
@@ -150,26 +146,6 @@ def bbsspider(request):
 
     else:
         return JsonResponse({"errorCode": "incorrectRequestMethod"}, status=400)
-
-
-def playlist(request):
-    if request.method != "GET":
-        return JsonResponse({"errorCode": "incorrectRequestMethod"}, status=400)
-
-    pageNumber = request.GET.get("page", None)
-    if not pageNumber:
-        return JsonResponse({"errorCode": "missingParameters"}, status=422)
-
-    queryset = models.Play.objects.all()
-    paginator = Paginator(queryset, 10)
-    plays = paginator.page(pageNumber).object_list
-
-    responseDict = {"data": []}
-    for play in plays:
-        responseDict["data"].append(model_to_dict(play))
-
-    return JsonResponse(responseDict, status=200)
-"""
 
 
 class UserViewSet(viewsets.ModelViewSet):
@@ -194,3 +170,35 @@ class PlatformViewSet(viewsets.ModelViewSet):
     """
     queryset = Platform.objects.all()
     serializer_class = PlatformSerializer
+
+
+class StudioViewSet(viewsets.ModelViewSet):
+    """
+    API endpoint that allows groups to be viewed or edited.
+    """
+    queryset = Studio.objects.all()
+    serializer_class = StudioSerializer
+
+
+class AuthorViewSet(viewsets.ModelViewSet):
+    """
+    API endpoint that allows groups to be viewed or edited.
+    """
+    queryset = Author.objects.all()
+    serializer_class = AuthorSerializer
+
+
+class RoleViewSet(viewsets.ModelViewSet):
+    """
+    API endpoint that allows groups to be viewed or edited.
+    """
+    queryset = Role.objects.all()
+    serializer_class = RoleSerializer
+
+
+class TagViewSet(viewsets.ModelViewSet):
+    """
+    API endpoint that allows groups to be viewed or edited.
+    """
+    queryset = Tag.objects.all()
+    serializer_class = TagSerializer

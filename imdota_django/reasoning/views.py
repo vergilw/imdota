@@ -1,4 +1,4 @@
-from django.shortcuts import render
+
 from django.http import HttpResponse, JsonResponse
 from django.contrib.auth import login
 from django.contrib.auth.models import Group
@@ -7,9 +7,9 @@ import requests
 from bs4 import BeautifulSoup
 from urllib.parse import urljoin
 
-from reasoning.models import User, Play, Platform, Studio, Author, Role, Tag
+from reasoning.models import User, Play, Platform, Studio, Author, Character, Tag
 from rest_framework import viewsets
-from reasoning.serializers import UserSerializer, PlaySerializer, PlatformSerializer, StudioSerializer, AuthorSerializer, RoleSerializer, TagSerializer
+from reasoning.serializers import UserSerializer, PlaySerializer, PlatformSerializer, StudioSerializer, AuthorSerializer, CharacterSerializer, TagSerializer
 
 # Create your views here.
 
@@ -92,62 +92,6 @@ def createeditor(request):
         return JsonResponse({"errorCode": "incorrectRequestMethod"}, status=400)
 
 
-def bbsspider(request):
-    if request.method == "GET":
-        if request.user.is_superuser:
-
-            pageNumber = request.GET.get("index", None)
-            if not pageNumber:
-                return JsonResponse({"errorCode": "missingParameters"}, status=422)
-
-            r = requests.get('https://www.murdermysterypa.com/plugin.php?id=mini_sjdp:index&page=' + pageNumber)
-            soup = BeautifulSoup(r.text, features="html.parser")
-            details = soup.find_all('h3', class_="name")
-
-            createdCount = 0
-
-            for detailpage in details:
-                title = detailpage.a.text
-
-                isExist = models.Play.objects.filter(name=title).exists()
-                if isExist:
-                    continue
-
-                subr = requests.get(urljoin("https://www.murdermysterypa.com/", detailpage.a["href"]))
-                subsoup = BeautifulSoup(subr.text, features="html.parser")
-
-                litag = subsoup.find(class_="viewsjdpmainul").find_all("li")
-
-                # member number
-                memberCount = litag[1].text.split("：")[1]
-                memberCount = int("".join(filter(str.isdigit, memberCount)))
-
-                # duration time
-                durationTime = litag[3].text.split("：")[1]
-                durationTime = int("".join(filter(str.isdigit, durationTime))) * 60
-
-                scoreList = subsoup.find_all(class_="pingjialist")
-                logicScore = scoreList[1].find("font").text
-                storyScore = scoreList[2].find("font").text
-
-                play = models.Play(name=title, roleCount=memberCount, durationMinutes=durationTime, logicScore=logicScore, storyScore=storyScore)
-                play.save()
-
-                # platform
-                platform = models.Platform.objects.get(name='线下')
-                play.platforms.add(platform)
-
-                createdCount += 1
-
-            return JsonResponse({"message": str(createdCount) + " objects created success"}, status=201)
-
-        else:
-            return JsonResponse({"errorCode": "unauthorized"}, status=401)
-
-    else:
-        return JsonResponse({"errorCode": "incorrectRequestMethod"}, status=400)
-
-
 class UserViewSet(viewsets.ModelViewSet):
     """
     API endpoint that allows users to be viewed or edited.
@@ -188,12 +132,12 @@ class AuthorViewSet(viewsets.ModelViewSet):
     serializer_class = AuthorSerializer
 
 
-class RoleViewSet(viewsets.ModelViewSet):
+class CharacterViewSet(viewsets.ModelViewSet):
     """
     API endpoint that allows groups to be viewed or edited.
     """
-    queryset = Role.objects.all()
-    serializer_class = RoleSerializer
+    queryset = Character.objects.all()
+    serializer_class = CharacterSerializer
 
 
 class TagViewSet(viewsets.ModelViewSet):

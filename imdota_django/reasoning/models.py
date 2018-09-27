@@ -6,7 +6,7 @@ from django.contrib.auth.models import AbstractUser
 
 class Studio(models.Model):
     name = models.CharField(max_length=30)
-    grade = models.FloatField(default=0)
+    score = models.FloatField(default=0)
     brief = models.TextField(blank=True, null=True)
 
     def __str__(self):
@@ -21,7 +21,7 @@ class Author(models.Model):
     studio = models.ForeignKey('Studio', on_delete=models.SET_NULL, null=True, blank=True, related_name='authors')
     name = models.CharField(max_length=30)
     brief = models.TextField(null=True, blank=True)
-    grade = models.FloatField(default=0)
+    score = models.FloatField(default=0)
     gender = models.CharField(
         max_length=2,
         choices=(
@@ -72,12 +72,13 @@ class Play(models.Model):
     durationMinutes = models.SmallIntegerField(default=0)
     wordCount = models.SmallIntegerField(default=0)
     publishedDate = models.DateTimeField(blank=True, null=True)
-    roleCount = models.SmallIntegerField(default=0)
+    characterCount = models.SmallIntegerField(default=0)
     isDetective = models.BooleanField(default=False)
     isRepresentative = models.BooleanField(default=False)
     logicScore = models.FloatField(default=0)
     storyScore = models.FloatField(default=0)
     platforms = models.ManyToManyField('Platform', blank=True, related_name='plays')
+    tags = models.ManyToManyField('Tag', blank=True, related_name='plays')
 
     # contributors = models.ManyToManyField('User')
 
@@ -100,8 +101,8 @@ class Platform(models.Model):
         verbose_name_plural = "游戏平台"
 
 
-class Role(models.Model):
-    play = models.ForeignKey('Play', on_delete=models.CASCADE, related_name='roles', blank=True, null=True)
+class Character(models.Model):
+    play = models.ForeignKey('Play', on_delete=models.CASCADE, related_name='characters', blank=True, null=True)
     name = models.CharField(max_length=30)
     brief = models.TextField(blank=True, null=True)
     gender = models.CharField(
@@ -124,7 +125,6 @@ class Role(models.Model):
 
 class Tag(models.Model):
     name = models.CharField(max_length=10)
-    play = models.ManyToManyField('Play', blank=True)
 
     def __str__(self):
         return self.name

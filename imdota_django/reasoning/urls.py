@@ -24,6 +24,7 @@ urlpatterns = [
     path('spider_baibian', spider_views.spider_baibian, name='spider_baibian'),
     path('spider_tiantian', spider_views.spider_tiantian, name='spider_tiantian'),
     path('spider_qu', spider_views.spider_qu, name='spider_qu'),
+    path('spider_tuilidashi', spider_views.spider_tuilidashi, name='spider_tuilidashi'),
 
 
     url(r'^', include(router.urls)),

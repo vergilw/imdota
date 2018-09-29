@@ -31,18 +31,7 @@ class Author(models.Model):
         null=True,
         blank=True
     )
-
-    # ROLE_CHOICES = (
-    #     (FRESHMAN, 'Writer'),
-    #     (SOPHOMORE, 'Designer'),
-    #     (JUNIOR, 'Junior'),
-    #     (SENIOR, 'Senior'),
-    # )
-    # role = models.CharField(
-    #     max_length=2,
-    #     choices=ROLE_CHOICES,
-    #     default=FRESHMAN,
-    # )
+    user = models.ForeignKey('User', on_delete=models.SET_NULL, blank=True, null=True)
 
     def __str__(self):
         return self.name
@@ -75,6 +64,7 @@ class Play(models.Model):
     characterCount = models.SmallIntegerField(default=0)
     isDetective = models.BooleanField(default=False)
     isRepresentative = models.BooleanField(default=False)
+    isExclusive = models.BooleanField(default=False)
     logicScore = models.FloatField(default=0)
     storyScore = models.FloatField(default=0)
     platforms = models.ManyToManyField('Platform', blank=True, related_name='plays')
